@@ -1,32 +1,163 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniNota</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniNota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="contenedor">
-        <h1>Calculadora de Nota Final</h1>
-        <p>Ingresa las notas de los primeros tres cortes (cada uno vale el 20%) para calcular la nota que necesitas en el examen final (que vale el 40%).</p>
-        
-        <form id="notaForm">
-            <label for="corte1">Nota del Primer Corte (20%):</label>
-            <input type="number" id="corte1" step="0.01" min="0" max="5" required>
 
-            <label for="corte2">Nota del Segundo Corte (20%):</label>
-            <input type="number" id="corte2" step="0.01" min="0" max="5" required>
+  <div class="app">
 
-            <label for="corte3">Nota del Tercer Corte (20%):</label>
-            <input type="number" id="corte3" step="0.01" min="0" max="5" required>
+    <header class="header">
+      <div class="header-inner">
+        <div>
+          <h1>UniNota</h1>
+          <p class="subtitle">Calcula la nota que necesitas en tu examen final</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-icon" id="btn-add-subject" title="Agregar materia">+</button>
+        </div>
+      </div>
+    </header>
 
-            <button type="submit">Calcular Nota Necesaria</button>
-        </form>
+    <nav class="tabs">
+      <button class="tab active" data-tab="calc">Calcular</button>
+      <button class="tab" data-tab="sim">Simulador</button>
+      <button class="tab" data-tab="history">Historial</button>
+    </nav>
 
-        <div id="resultado"></div>
+    <main class="content">
+
+      <!-- PANEL CALCULAR -->
+      <div id="panel-calc" class="panel active">
+
+        <div class="subject-bar">
+          <label class="field-label">Materia</label>
+          <select id="subject-select"></select>
+        </div>
+
+        <div class="inputs-grid">
+          <div class="field">
+            <label class="field-label" for="c1">Corte 1 <span class="pct">20%</span></label>
+            <input type="number" id="c1" min="0" max="5" step="0.1" placeholder="0.0">
+          </div>
+          <div class="field">
+            <label class="field-label" for="c2">Corte 2 <span class="pct">20%</span></label>
+            <input type="number" id="c2" min="0" max="5" step="0.1" placeholder="0.0">
+          </div>
+          <div class="field">
+            <label class="field-label" for="c3">Corte 3 <span class="pct">20%</span></label>
+            <input type="number" id="c3" min="0" max="5" step="0.1" placeholder="0.0">
+          </div>
+        </div>
+
+        <div class="goal-row">
+          <label class="field-label" for="goal">Nota objetivo</label>
+          <div class="goal-input-wrap">
+            <input type="number" id="goal" min="0" max="5" step="0.1" value="3.0">
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btn-calc">Calcular nota necesaria</button>
+
+        <div id="result-section" class="result-section hidden">
+
+          <div class="result-card" id="result-card">
+            <div class="result-label">Necesitas en el examen final</div>
+            <div class="result-value" id="r-val">—</div>
+            <div class="result-msg" id="r-msg"></div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric">
+              <div class="metric-label">Acumulado</div>
+              <div class="metric-value" id="m-acc">—</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Promedio</div>
+              <div class="metric-value" id="m-avg">—</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Objetivo</div>
+              <div class="metric-value" id="m-goal">3.0</div>
+            </div>
+          </div>
+
+          <div class="chart-wrap">
+            <div class="chart-title">Distribución de notas</div>
+            <div id="bar-chart" class="bar-chart"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PANEL SIMULADOR -->
+      <div id="panel-sim" class="panel">
+        <p class="sim-intro">Mueve los sliders para explorar escenarios. ¿Qué pasa si sacas X en cada corte?</p>
+
+        <div class="sim-sliders">
+          <div class="sim-row">
+            <span class="sim-label">Corte 1 <span class="pct">20%</span></span>
+            <input type="range" id="s1" min="0" max="5" step="0.1" value="3.0">
+            <span class="sim-val" id="sv1">3.0</span>
+          </div>
+          <div class="sim-row">
+            <span class="sim-label">Corte 2 <span class="pct">20%</span></span>
+            <input type="range" id="s2" min="0" max="5" step="0.1" value="3.0">
+            <span class="sim-val" id="sv2">3.0</span>
+          </div>
+          <div class="sim-row">
+            <span class="sim-label">Corte 3 <span class="pct">20%</span></span>
+            <input type="range" id="s3" min="0" max="5" step="0.1" value="3.0">
+            <span class="sim-val" id="sv3">3.0</span>
+          </div>
+          <div class="sim-row sim-goal-row">
+            <span class="sim-label">Nota deseada</span>
+            <input type="range" id="sg" min="0" max="5" step="0.1" value="3.0">
+            <span class="sim-val" id="sgv">3.0</span>
+          </div>
+        </div>
+
+        <div class="result-card" id="sim-card">
+          <div class="result-label">Nota necesaria en el examen final</div>
+          <div class="result-value" id="sim-val">—</div>
+          <div class="result-msg" id="sim-msg"></div>
+        </div>
+
+        <div class="chart-wrap">
+          <div class="chart-title">Distribución simulada</div>
+          <div id="sim-bar-chart" class="bar-chart"></div>
+        </div>
+      </div>
+
+      <!-- PANEL HISTORIAL -->
+      <div id="panel-history" class="panel">
+        <div class="history-header">
+          <span class="history-count" id="history-count">0 registros</span>
+          <button class="btn-clear" id="btn-clear-history">Limpiar</button>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- MODAL NUEVA MATERIA -->
+  <div class="modal-overlay hidden" id="modal">
+    <div class="modal">
+      <h3 class="modal-title">Nueva materia</h3>
+      <input type="text" id="new-subject" class="modal-input" placeholder="Ej: Cálculo diferencial" maxlength="40">
+      <div class="modal-actions">
+        <button class="btn-secondary" id="btn-modal-cancel">Cancelar</button>
+        <button class="btn-primary" id="btn-modal-confirm">Agregar</button>
+      </div>
     </div>
+  </div>
 
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
