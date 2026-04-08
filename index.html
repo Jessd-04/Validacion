@@ -4,9 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UniNota Pro</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -16,13 +19,13 @@
     <div class="shape shape-3"></div>
   </div>
 
-  <div class="app glass-panel">
+  <div class="app glass-panel" id="main-app">
 
     <header class="header">
       <div class="header-inner">
         <div>
           <h1>UniNota <span class="badge">Pro</span></h1>
-          <p class="subtitle">Calcula la nota que necesitas en tu examen final</p>
+          <p class="subtitle">Calcula la nota que necesitas de forma inteligente</p>
         </div>
         <div class="header-actions">
           <button class="btn-icon" id="btn-add-subject" title="Agregar materia">+</button>
@@ -33,7 +36,7 @@
     <nav class="tabs">
       <button class="tab active" data-tab="calc">Calcular</button>
       <button class="tab" data-tab="sim">Simulador</button>
-      <button class="tab" data-tab="history">Historial</button>
+      <button class="tab" data-tab="history">Historial y PGA</button>
     </nav>
 
     <main class="content">
@@ -42,33 +45,29 @@
       <div id="panel-calc" class="panel active">
 
         <div class="subject-bar">
-          <label class="field-label">Materia</label>
+          <label class="field-label">Materia Activa</label>
           <select id="subject-select"></select>
         </div>
 
-        <div class="inputs-grid">
-          <div class="field">
-            <label class="field-label" for="c1">Corte 1 <span class="pct">20%</span></label>
-            <input type="number" id="c1" min="0" max="5" step="0.1" placeholder="0.0">
-          </div>
-          <div class="field">
-            <label class="field-label" for="c2">Corte 2 <span class="pct">20%</span></label>
-            <input type="number" id="c2" min="0" max="5" step="0.1" placeholder="0.0">
-          </div>
-          <div class="field">
-            <label class="field-label" for="c3">Corte 3 <span class="pct">20%</span></label>
-            <input type="number" id="c3" min="0" max="5" step="0.1" placeholder="0.0">
-          </div>
+        <div class="dynamic-cuts-header">
+          <label class="field-label">Notas Opcionales</label>
+          <button class="btn-secondary btn-sm" id="btn-add-cut">+ Añadir Corte</button>
+        </div>
+        
+        <div class="inputs-grid" id="dynamic-cuts-container">
+          <!-- Dinámico desde JS -->
         </div>
 
         <div class="goal-row">
-          <label class="field-label" for="goal">Nota objetivo</label>
+          <label class="field-label" for="goal">Nota objetivo (Para aprobar)</label>
           <div class="goal-input-wrap">
             <input type="number" id="goal" min="0" max="5" step="0.1" value="3.0">
           </div>
         </div>
+        
+        <div id="alerta-pesos" class="alert-box hidden">⚠️ Los pesos de los cortes y el final no suman 100%</div>
 
-        <button class="btn-primary" id="btn-calc">Calcular nota necesaria</button>
+        <button class="btn-primary" id="btn-calc">Calcular y Guardar en Historial</button>
 
         <div id="result-section" class="result-section hidden">
 
@@ -80,12 +79,12 @@
 
           <div class="metrics-grid">
             <div class="metric">
-              <div class="metric-label">Acumulado</div>
+              <div class="metric-label">Nota Acumulada</div>
               <div class="metric-value" id="m-acc">—</div>
             </div>
             <div class="metric">
-              <div class="metric-label">Promedio</div>
-              <div class="metric-value" id="m-avg">—</div>
+              <div class="metric-label">% Llevado</div>
+              <div class="metric-value" id="m-pct">—</div>
             </div>
             <div class="metric">
               <div class="metric-label">Objetivo</div>
@@ -94,7 +93,7 @@
           </div>
 
           <div class="chart-wrap">
-            <div class="chart-title">Distribución de notas</div>
+            <div class="chart-title">Distribución de notas actuales vs requeridas</div>
             <div id="bar-chart" class="bar-chart"></div>
           </div>
 
@@ -103,24 +102,10 @@
 
       <!-- PANEL SIMULADOR -->
       <div id="panel-sim" class="panel">
-        <p class="sim-intro">Mueve los sliders para explorar escenarios. ¿Qué pasa si sacas X en cada corte?</p>
+        <p class="sim-intro">Mueve los sliders para explorar qué pasaría si sacas diferentes notas.</p>
 
-        <div class="sim-sliders">
-          <div class="sim-row">
-            <span class="sim-label">Corte 1 <span class="pct">20%</span></span>
-            <input type="range" id="s1" min="0" max="5" step="0.1" value="3.0">
-            <span class="sim-val" id="sv1">3.0</span>
-          </div>
-          <div class="sim-row">
-            <span class="sim-label">Corte 2 <span class="pct">20%</span></span>
-            <input type="range" id="s2" min="0" max="5" step="0.1" value="3.0">
-            <span class="sim-val" id="sv2">3.0</span>
-          </div>
-          <div class="sim-row">
-            <span class="sim-label">Corte 3 <span class="pct">20%</span></span>
-            <input type="range" id="s3" min="0" max="5" step="0.1" value="3.0">
-            <span class="sim-val" id="sv3">3.0</span>
-          </div>
+        <div class="sim-sliders" id="sim-sliders-container">
+          <!-- Renderizado en JS dinamicamente -->
           <div class="sim-row sim-goal-row">
             <span class="sim-label">Nota deseada</span>
             <input type="range" id="sg" min="0" max="5" step="0.1" value="3.0">
@@ -142,10 +127,20 @@
 
       <!-- PANEL HISTORIAL -->
       <div id="panel-history" class="panel">
+        
+        <div class="pga-card">
+          <div class="pga-info">
+            <div class="pga-label">Promedio General Acumulado (PGA)</div>
+            <div class="pga-value" id="overall-pga">0.00</div>
+          </div>
+          <button class="btn-primary" id="btn-export-pdf" style="width: auto; padding: 10px 15px; font-size: 13px;">Descargar Boletín (PDF)</button>
+        </div>
+
         <div class="history-header">
           <span class="history-count" id="history-count">0 registros</span>
-          <button class="btn-clear" id="btn-clear-history">Limpiar</button>
+          <button class="btn-clear" id="btn-clear-history">Limpiar Todo</button>
         </div>
+        
         <div id="history-list" class="history-list"></div>
       </div>
 
@@ -155,11 +150,25 @@
   <!-- MODAL NUEVA MATERIA -->
   <div class="modal-overlay hidden" id="modal">
     <div class="modal">
-      <h3 class="modal-title">Nueva materia</h3>
+      <h3 class="modal-title">Agregar nueva materia</h3>
+      
+      <label class="field-label">Nombre de la Materia</label>
       <input type="text" id="new-subject" class="modal-input" placeholder="Ej: Cálculo diferencial" maxlength="40">
+      
+      <div class="modal-grid">
+        <div>
+          <label class="field-label">Semestre</label>
+          <input type="number" id="new-semester" class="modal-input" placeholder="Ej: 1" value="1" min="1">
+        </div>
+        <div>
+          <label class="field-label">Créditos</label>
+          <input type="number" id="new-credits" class="modal-input" placeholder="Ej: 3" value="3" min="1">
+        </div>
+      </div>
+
       <div class="modal-actions">
         <button class="btn-secondary" id="btn-modal-cancel">Cancelar</button>
-        <button class="btn-primary" id="btn-modal-confirm">Agregar</button>
+        <button class="btn-primary" id="btn-modal-confirm">Guardar</button>
       </div>
     </div>
   </div>
