@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,13 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4f46e5">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=2">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
+
 <body>
 
   <div class="background-shapes">
@@ -53,7 +57,7 @@
           <label class="field-label">Notas Opcionales</label>
           <button class="btn-secondary btn-sm" id="btn-add-cut">+ Añadir Corte</button>
         </div>
-        
+
         <div class="inputs-grid" id="dynamic-cuts-container">
           <!-- Dinámico desde JS -->
         </div>
@@ -64,7 +68,7 @@
             <input type="number" id="goal" min="0" max="5" step="0.1" value="3.0">
           </div>
         </div>
-        
+
         <div id="alerta-pesos" class="alert-box hidden">⚠️ Los pesos de los cortes y el final no suman 100%</div>
 
         <button class="btn-primary" id="btn-calc">Calcular y Guardar en Historial</button>
@@ -127,20 +131,21 @@
 
       <!-- PANEL HISTORIAL -->
       <div id="panel-history" class="panel">
-        
+
         <div class="pga-card">
           <div class="pga-info">
             <div class="pga-label">Promedio General Acumulado (PGA)</div>
             <div class="pga-value" id="overall-pga">0.00</div>
           </div>
-          <button class="btn-primary" id="btn-export-pdf" style="width: auto; padding: 10px 15px; font-size: 13px;">Descargar Boletín (PDF)</button>
+          <button class="btn-primary" id="btn-export-pdf"
+            style="width: auto; padding: 10px 15px; font-size: 13px;">Descargar Boletín (PDF)</button>
         </div>
 
         <div class="history-header">
           <span class="history-count" id="history-count">0 registros</span>
           <button class="btn-clear" id="btn-clear-history">Limpiar Todo</button>
         </div>
-        
+
         <div id="history-list" class="history-list"></div>
       </div>
 
@@ -151,10 +156,10 @@
   <div class="modal-overlay hidden" id="modal">
     <div class="modal">
       <h3 class="modal-title">Agregar nueva materia</h3>
-      
+
       <label class="field-label">Nombre de la Materia</label>
       <input type="text" id="new-subject" class="modal-input" placeholder="Ej: Cálculo diferencial" maxlength="40">
-      
+
       <div class="modal-grid">
         <div>
           <label class="field-label">Semestre</label>
@@ -173,6 +178,7 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=2"></script>
 </body>
+
 </html>
