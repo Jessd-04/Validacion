@@ -30,7 +30,7 @@ body.light-theme input[type="range"] { background: rgba(0,0,0,0.1); box-shadow: 
 body.light-theme .cut-box { background: rgba(255, 255, 255, 0.5); }
 body.light-theme .bar-track { background: rgba(0, 0, 0, 0.08); }
 body.light-theme .pga-card { background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.1)); }
-body.light-theme .bar-num, body.light-theme .sim-val, body.light-theme .pga-value { color: var(--text-main); }
+body.light-theme .bar-num, body.light-theme .sim-val, body.light-theme .pga-value, body.light-theme .metric-value { color: var(--text-main); }
 body.light-theme .pga-value { text-shadow: none; }
 body.light-theme .btn-icon { color: var(--text-main); border-color: rgba(0,0,0,0.15); }
 body.light-theme .hist-subject { color: var(--text-main); }
@@ -89,6 +89,20 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .cut-box { display: flex; flex-direction: column; gap: 6px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 12px; border: 1px solid var(--glass-border); position: relative;}
 .cut-box-final { background: rgba(79, 70, 229, 0.1); border-color: rgba(129, 140, 248, 0.3); }
 .cut-remove { position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+
+/* ===== UDEC MODE ACORDEON ===== */
+.udec-accordion { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+.udec-card { background: rgba(0,0,0,0.1); border: 1px solid var(--glass-border); border-radius: var(--radius-md); overflow: hidden; }
+body.light-theme .udec-card { background: rgba(255,255,255,0.4); }
+.udec-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: transparent; border: none; font-family: var(--font); color: var(--text-main); font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+.udec-header:hover { background: rgba(255,255,255,0.05); }
+body.light-theme .udec-header:hover { background: rgba(0,0,0,0.03); }
+.udec-avg { background: rgba(79, 70, 229, 0.2); border: 1px solid rgba(129, 140, 248, 0.3); padding: 2px 8px; border-radius: var(--radius-sm); font-family: var(--font-mono); color: #818cf8; font-size: 14px; }
+.udec-body { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; opacity: 0; }
+.udec-body.open { padding: 14px 16px; max-height: 600px; border-top: 1px solid var(--glass-border); opacity: 1; }
+.udec-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.udec-grid input { padding: 8px 6px; font-size: 13px; text-align: center; }
+
 .goal-row { margin-bottom: 1.5rem; }
 .goal-input-wrap { max-width: 150px; }
 
@@ -183,6 +197,7 @@ input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; background: l
 @media (max-width: 480px) {
   body { padding-top: 1rem;}
   .inputs-grid { grid-template-columns: 1fr 1fr; }
+  .udec-grid { grid-template-columns: repeat(2, 1fr); }
   .metrics-grid { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
   h1 { font-size: 24px; }
   .result-value { font-size: 36px; }

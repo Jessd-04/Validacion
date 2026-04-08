@@ -45,6 +45,23 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 // ===== DYNAMIC CUTS UI =====
+let evalMode = 'free'; // 'free' o 'udec'
+
+document.getElementById('eval-mode-select').addEventListener('change', e => {
+  evalMode = e.target.value;
+  document.getElementById('mode-free').classList.toggle('hidden', evalMode !== 'free');
+  document.getElementById('mode-udec').classList.toggle('hidden', evalMode !== 'udec');
+  calcMain(false);
+});
+
+// Lógica de acordeones UdeC
+document.querySelectorAll('.udec-header').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const body = btn.nextElementSibling;
+    body.classList.toggle('open');
+  });
+});
+
 function renderDynamicCuts() {
   const cont = document.getElementById('dynamic-cuts-container');
   const simCont = document.getElementById('sim-sliders-container');
@@ -95,7 +112,7 @@ document.getElementById('btn-add-cut').addEventListener('click', addCut);
 // ===== CORE CALCULATION =====
 function getCutsData() {
   const nodes = document.querySelectorAll('.cut-box');
-  let valid = true, sumWeights = 0, acc = 0;
+  let sumWeights = 0, acc = 0;
   const cuts = [];
   
   nodes.forEach(n => {
@@ -111,8 +128,40 @@ function getCutsData() {
   return { cuts, sumWeights, acc, leftoverW: (100 - sumWeights) / 100 };
 }
 
+function getUdeCData() {
+  document.getElementById('alerta-pesos').classList.add('hidden'); // No aplica acá porque UdeC es fijo 100% (60% + 40%)
+
+  const readAvg = (selector, avgId) => {
+    const nodes = document.querySelectorAll(selector);
+    let sum = 0, count = 0;
+    nodes.forEach(n => {
+      const v = parseFloat(n.value);
+      if (!isNaN(v)) { sum += v; count++; }
+    });
+    const avg = count > 0 ? (sum / count) : 0;
+    document.getElementById(avgId).textContent = avg.toFixed(2);
+    return avg;
+  };
+
+  const avg1 = readAvg('.u-in.c1', 'udec-av-1');
+  const avg2 = readAvg('.u-in.c2', 'udec-av-2');
+  const avg3 = readAvg('.u-in.c3', 'udec-av-3'); // Es 1 solo input pero la lógica funciona igual
+
+  const acc = (avg1 * 0.2) + (avg2 * 0.2) + (avg3 * 0.2);
+  return {
+    cuts: [
+      { val: avg1, weight: 20 },
+      { val: avg2, weight: 20 },
+      { val: avg3, weight: 20 }
+    ],
+    sumWeights: 60,
+    acc: acc,
+    leftoverW: 0.40 // Examen final de 40% fijo
+  };
+}
+
 function calcMain(saveToHistory = false) {
-  const data = getCutsData();
+  const data = evalMode === 'free' ? getCutsData() : getUdeCData();
   const goal = parseFloat(document.getElementById('goal').value) || 3.0;
 
   if (data.sumWeights >= 100 && data.leftoverW <= 0) {
@@ -204,12 +253,13 @@ function renderBarsGeneric(containerId, bars) {
 }
 
 function attachCutListeners() {
-  document.querySelectorAll('.cut-val, .cut-weight, #goal').forEach(el => {
+  document.querySelectorAll('.cut-val, .cut-weight, #goal, .u-in').forEach(el => {
     el.addEventListener('input', () => {
-      // Update weights back to state
-      document.querySelectorAll('.cut-box').forEach((n, i) => {
-        currentCuts[i].weight = parseFloat(n.querySelector('.cut-weight').value) || 0;
-      });
+      if (el.classList.contains('cut-weight') || el.classList.contains('cut-val')) {
+        document.querySelectorAll('.cut-box').forEach((n, i) => {
+          currentCuts[i].weight = parseFloat(n.querySelector('.cut-weight').value) || 0;
+        });
+      }
       calcMain(false);
     });
   });

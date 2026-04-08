@@ -62,18 +62,94 @@
       <div id="panel-calc" class="panel active">
 
         <div class="subject-bar">
+          <label class="field-label">Sistema de Evaluación</label>
+          <select id="eval-mode-select">
+            <option value="free">Opción 1: Modo Libre (Porcentajes Dinámicos)</option>
+            <option value="udec">Opción 2: Modo UdeC (Sistema Oficial de la Universidad)</option>
+          </select>
+        </div>
+
+        <div class="subject-bar" style="margin-bottom: 2rem;">
           <label class="field-label">Materia Activa</label>
           <select id="subject-select"></select>
         </div>
 
-        <div class="dynamic-cuts-header">
-          <label class="field-label">Notas Opcionales</label>
-          <button class="btn-secondary btn-sm" id="btn-add-cut">+ Añadir Corte</button>
+        <!-- MODO LIBRE -->
+        <div id="mode-free">
+          <div class="dynamic-cuts-header">
+            <label class="field-label" style="margin-bottom:0;">Notas Opcionales</label>
+            <button class="btn-secondary btn-sm" id="btn-add-cut">+ Añadir Corte</button>
+          </div>
+          <div class="inputs-grid" id="dynamic-cuts-container">
+            <!-- Dinámico desde JS -->
+          </div>
         </div>
 
-        <div class="inputs-grid" id="dynamic-cuts-container">
-          <!-- Dinámico desde JS -->
+        <!-- MODO UDEC -->
+        <div id="mode-udec" class="hidden">
+          <label class="field-label" style="margin-bottom:12px;">Cortes Oficiales (Unidades)</label>
+          <div class="udec-accordion">
+
+            <div class="udec-card">
+              <button class="udec-header"><span>Corte 1 (20%) - Unidad 1 y 2</span><span class="udec-avg"
+                  id="udec-av-1">0.0</span></button>
+              <div class="udec-body">
+                <label class="field-label-sm">Unidad 1</label>
+                <div class="udec-grid">
+                  <input type="number" class="u-in c1" placeholder="P. Indiv" min="0" max="5" step="0.1"
+                    title="Protocolo Individual">
+                  <input type="number" class="u-in c1" placeholder="P. Colab" min="0" max="5" step="0.1"
+                    title="Protocolo Colaborativo">
+                  <input type="number" class="u-in c1" placeholder="Actividad" min="0" max="5" step="0.1"
+                    title="Actividad Apren.">
+                  <input type="number" class="u-in c1" placeholder="Evaluac." min="0" max="5" step="0.1"
+                    title="Evaluación">
+                </div>
+                <label class="field-label-sm" style="margin-top:12px;">Unidad 2</label>
+                <div class="udec-grid">
+                  <input type="number" class="u-in c1" placeholder="P. Indiv" min="0" max="5" step="0.1">
+                  <input type="number" class="u-in c1" placeholder="P. Colab" min="0" max="5" step="0.1">
+                  <input type="number" class="u-in c1" placeholder="Actividad" min="0" max="5" step="0.1">
+                  <input type="number" class="u-in c1" placeholder="Evaluac." min="0" max="5" step="0.1">
+                </div>
+              </div>
+            </div>
+
+            <div class="udec-card">
+              <button class="udec-header"><span>Corte 2 (20%) - Unidad 3 y 4</span><span class="udec-avg"
+                  id="udec-av-2">0.0</span></button>
+              <div class="udec-body">
+                <label class="field-label-sm">Unidad 3</label>
+                <div class="udec-grid">
+                  <input type="number" class="u-in c2" placeholder="P. Indiv" min="0" max="5" step="0.1">
+                  <input type="number" class="u-in c2" placeholder="P. Colab" min="0" max="5" step="0.1">
+                  <input type="number" class="u-in c2" placeholder="Actividad" min="0" max="5" step="0.1">
+                  <input type="number" class="u-in c2" placeholder="Evaluac." min="0" max="5" step="0.1">
+                </div>
+                <label class="field-label-sm" style="margin-top:12px;">Unidad 4</label>
+                <div class="udec-grid">
+                  <input type="number" class="u-in c2" placeholder="P. Indiv" min="0" max="5" step="0.1">
+                  <input type="number" class="u-in c2" placeholder="P. Colab" min="0" max="5" step="0.1">
+                  <input type="number" class="u-in c2" placeholder="Actividad" min="0" max="5" step="0.1">
+                  <input type="number" class="u-in c2" placeholder="Evaluac." min="0" max="5" step="0.1">
+                </div>
+              </div>
+            </div>
+
+            <div class="udec-card">
+              <button class="udec-header"><span>Corte 3 (20%) - Trabajo Final</span><span class="udec-avg"
+                  id="udec-av-3">0.0</span></button>
+              <div class="udec-body">
+                <div class="udec-grid" style="grid-template-columns: 1fr;">
+                  <input type="number" class="u-in c3" placeholder="Nota TCC (Trabajo Colaborativo Contextualizado)">
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
+
+
 
         <div class="goal-row">
           <label class="field-label" for="goal">Nota objetivo (Para aprobar)</label>
